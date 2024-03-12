@@ -4,12 +4,13 @@ from tqdm import tqdm
 from bs4 import BeautifulSoup
 
 class wallicraftScrape(object):
-    def __init__(self, baseUrl, category, resolution):
+    def __init__(self, baseUrl, category, resolution, pages):
         self.headers = {
             'User-Agent' : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36'
         }
         self.baseUrl = baseUrl
         self.category = category
+        self.pages = pages
         self.resolution = resolution
     
     def initlization(self):
@@ -25,7 +26,7 @@ class wallicraftScrape(object):
     def scrapeData(self):
         self.initlization()
         try:
-            for i in  tqdm(range(1,5), desc='Loading...'):
+            for i in  tqdm(self.pages, desc='Loading...'):
                 r = requests.get(f"https://wallpaperscraft.com/catalog/{self.category}/{self.resolution}/page{i}", headers=self.headers)
                 soup = BeautifulSoup(r.content, 'lxml')
                 self.img_link = soup.find_all('a', {'class' : 'wallpapers__link'})
@@ -45,7 +46,8 @@ class wallicraftScrape(object):
 
 if __name__ == '__main__':
     baseUrl = "https://wallpaperscraft.com"
-    category = "cars"
-    resolution = "1280x1024"
-    class_wallicraftScrape = wallicraftScrape(baseUrl=baseUrl, category=category, resolution=resolution)
+    pages = range(2,4)
+    category = "nature"
+    resolution = "1920x1080"
+    class_wallicraftScrape = wallicraftScrape(baseUrl=baseUrl, category=category, resolution=resolution, pages=pages)
     class_wallicraftScrape.scrapeData()
